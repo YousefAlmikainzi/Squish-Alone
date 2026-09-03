@@ -48,9 +48,9 @@ Shader "Custom/SlimeShader"
             {
                 float3 normals = normalize(IN.normal);
                 Light mainLight = GetMainLight();
-                float diffuse = dot(normals, mainLight.direction);
-                float3 ambiance = _BaseColor * .25;
-                float3 albedo = (diffuse * _BaseColor) + ambiance;
+                float diffuse = max(dot(normals, mainLight.direction), 0);
+                float3 ambiance = _BaseColor.rgb * .25;
+                float3 albedo = (diffuse * _BaseColor.rgb) + ambiance;
 
                 return float4(albedo,1.0);
             }

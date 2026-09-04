@@ -31,6 +31,7 @@ Shader "Custom/SlimeShader"
                 float4 positionHCS : SV_POSITION;
                 float2 uv : TEXCOORD0;
                 float3 normal : TEXCOORD1;
+                float3 worldPos : TEXCOORD2;
             };
 
             float4 _BaseColor;
@@ -40,6 +41,7 @@ Shader "Custom/SlimeShader"
                 Varyings OUT;
                 OUT.uv = IN.uv;
                 OUT.normal = TransformObjectToWorldNormal(IN.normal);
+                OUT.worldPos = TransformObjectToWorld(IN.positionOS.xyz);
                 OUT.positionHCS = TransformObjectToHClip(IN.positionOS.xyz);
                 return OUT;
             }

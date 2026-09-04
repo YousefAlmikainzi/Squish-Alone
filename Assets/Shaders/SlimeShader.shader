@@ -49,7 +49,7 @@ Shader "Custom/SlimeShader"
             float4 frag(Varyings IN) : SV_Target
             {
                 float3 camera = GetCameraPositionWS();
-                float3 viewDirection = normalize(IN.worldPos - camera);
+                float3 viewDirection = normalize(camera - IN.worldPos);
                 
                 float3 normals = normalize(IN.normal);
                 Light mainLight = GetMainLight();

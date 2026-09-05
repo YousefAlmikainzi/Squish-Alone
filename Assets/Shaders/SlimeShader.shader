@@ -48,11 +48,13 @@ Shader "Custom/SlimeShader"
 
             float4 frag(Varyings IN) : SV_Target
             {
-                float3 camera = GetCameraPositionWS();
-                float3 viewDirection = normalize(camera - IN.worldPos);
-                
                 float3 normals = normalize(IN.normal);
+                float3 camera = GetCameraPositionWS();
                 Light mainLight = GetMainLight();
+                
+                float3 viewDirection = normalize(camera - IN.worldPos);
+                float frenselCalc = pow(1 - max(dot(normals, viewDirection),0), .1); 
+                
                 float diffuse = max(dot(normals, mainLight.direction), 0);
                 float3 ambiance = _BaseColor.rgb * .25;
                 float3 albedo = (diffuse * _BaseColor.rgb) + ambiance;

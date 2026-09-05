@@ -57,7 +57,7 @@ Shader "Custom/SlimeShader"
                 
                 float diffuse = max(dot(normals, mainLight.direction), 0);
                 float3 ambiance = _BaseColor.rgb * .25;
-                float3 albedo = (diffuse * _BaseColor.rgb) + ambiance;
+                float3 albedo = ((diffuse * _BaseColor.rgb) + ambiance) * frenselCalc;
 
                 return float4(albedo,1.0);
             }

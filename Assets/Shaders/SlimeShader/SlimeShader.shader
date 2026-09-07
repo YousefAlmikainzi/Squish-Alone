@@ -53,11 +53,11 @@ Shader "Custom/SlimeShader"
                 Light mainLight = GetMainLight();
                 
                 float3 viewDirection = normalize(camera - IN.worldPos);
-                float frenselCalc = pow(1 - max(dot(normals, viewDirection),0), .1); 
+                float frenselCalc = pow(1 - max(dot(normals, viewDirection),0), 1); 
                 
                 float diffuse = max(dot(normals, mainLight.direction), 0);
                 float3 ambiance = _BaseColor.rgb * .25;
-                float3 albedo = ((diffuse * _BaseColor.rgb) + ambiance) * frenselCalc;
+                float3 albedo = ((diffuse * _BaseColor.rgb) + ambiance) + frenselCalc;
 
                 return float4(albedo,1.0);
             }

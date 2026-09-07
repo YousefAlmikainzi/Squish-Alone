@@ -58,9 +58,10 @@ Shader "Custom/SlimeShader"
                 float frenselCalc = pow(1 - max(dot(normals, viewDirection),0), 1); 
                 
                 float diffuse = max(dot(normals, mainLight.direction), 0);
+                float toonEffect = step(.44, diffuse) / .44;
                 float3 ambiance = _BaseColor.rgb * .25;
                 float3 frenselColor = frenselCalc * _RimColor;
-                float3 albedo = ((diffuse * _BaseColor.rgb) + ambiance) + frenselColor;
+                float3 albedo = ((toonEffect * _BaseColor.rgb) + ambiance) + frenselColor;
 
                 return float4(albedo,1.0);
             }

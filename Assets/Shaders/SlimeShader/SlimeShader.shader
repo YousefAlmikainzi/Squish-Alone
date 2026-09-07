@@ -3,6 +3,7 @@ Shader "Custom/SlimeShader"
     Properties
     {
         [MainColor] _BaseColor("Base Color", Color) = (1, 1, 1, 1)
+        _RimColor("Rim Color", Color) = (1,1,1,1)
     }
 
     SubShader
@@ -35,6 +36,7 @@ Shader "Custom/SlimeShader"
             };
 
             float4 _BaseColor;
+            float4 _RimColor;
 
             Varyings vert(Attributes IN)
             {
@@ -57,7 +59,8 @@ Shader "Custom/SlimeShader"
                 
                 float diffuse = max(dot(normals, mainLight.direction), 0);
                 float3 ambiance = _BaseColor.rgb * .25;
-                float3 albedo = ((diffuse * _BaseColor.rgb) + ambiance) + frenselCalc;
+                float3 frenselColor = frenselCalc * _RimColor;
+                float3 albedo = ((diffuse * _BaseColor.rgb) + ambiance) + frenselColor;
 
                 return float4(albedo,1.0);
             }

@@ -4,12 +4,17 @@ Shader "Custom/SlimeShader"
     {
         [MainColor] _BaseColor("Base Color", Color) = (1, 1, 1, 1)
         _RimColor("Rim Color", Color) = (1,1,1,1)
+        _Transparency("Transparency", Range(0,1)) = 1
+        _FresnelPow("Fresnel Power", Float) = 1
     }
 
     SubShader
     {
-        Tags { "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline" }
+        Tags { "RenderType" = "Transparent" "Queue" = "Transparent" "RenderPipeline" = "UniversalPipeline" }
 
+        Blend SrcAlpha OneMinusSrcAlpha
+        ZWrite Off
+        
         Pass
         {
             HLSLPROGRAM
@@ -37,6 +42,8 @@ Shader "Custom/SlimeShader"
 
             float4 _BaseColor;
             float4 _RimColor;
+            float _Transparency;
+            float _FresnelPow;
 
             Varyings vert(Attributes IN)
             {
@@ -55,15 +62,16 @@ Shader "Custom/SlimeShader"
                 Light mainLight = GetMainLight();
                 
                 float3 viewDirection = normalize(camera - IN.worldPos);
-                float frenselCalc = pow(1 - max(dot(normals, viewDirection),0), 1); 
+                float frenselCalc = pow(1 - max(dot(normals, viewDirection),0), _FresnelPow); 
                 
                 float diffuse = max(dot(normals, mainLight.direction), 0);
-                float toonEffect = step(.44, diffuse) / .44;
+                float toonEffect = smoothstep(.25, .5, diffuse);
+                toonEffect = floor(toonEffect * 2)/2;
                 float3 ambiance = _BaseColor.rgb * .25;
                 float3 frenselColor = frenselCalc * _RimColor;
                 float3 albedo = ((toonEffect * _BaseColor.rgb) + ambiance) + frenselColor;
 
-                return float4(albedo,1.0);
+                return float4(albedo,_Transparency);
             }
             ENDHLSL
         }

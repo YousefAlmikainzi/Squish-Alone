@@ -25,14 +25,17 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
+    - AmbienceAmount: 1
+    - _AmbienceAmount: 0.25
     - _FrenselPow: 1
     - _FresnelPow: 7
     - _SmoothValueHigh: 0.5
     - _SmoothValueLow: 0.15
     - _StepValue: 0.335
-    - _Transparency: 0.97
+    - _Transparency: 0.95
+    - _toonStep: 2
     m_Colors:
     - _BaseColor: {r: 0.19989875, g: 0.5660378, b: 0, a: 1}
-    - _RimColor: {r: 0, g: 1, b: 0.8768053, a: 1}
+    - _RimColor: {r: 0, g: 0.6481855, b: 0.78431374, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

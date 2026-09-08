@@ -27,7 +27,10 @@ Material:
     m_Floats:
     - _FrenselPow: 1
     - _FresnelPow: 7
-    - _Transparency: 0.985
+    - _SmoothValueHigh: 0.5
+    - _SmoothValueLow: 0.15
+    - _StepValue: 0.335
+    - _Transparency: 0.97
     m_Colors:
     - _BaseColor: {r: 0.19989875, g: 0.5660378, b: 0, a: 1}
     - _RimColor: {r: 0, g: 1, b: 0.8768053, a: 1}

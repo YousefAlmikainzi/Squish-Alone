@@ -7,8 +7,8 @@ Shader "Custom/SlimeShader"
         _Transparency("Transparency", Range(0,1)) = 1
         _AmbienceAmount("Ambience", Range(0,1)) = .25
         _FresnelPow("Fresnel Power", Float) = 1
-        _SmoothValueLow("Step Value", Range(0,1)) = .2
-        _SmoothValueHigh("Step Value", Range(0,1)) = .5
+        _SmoothValueLow("Step Value Low", Range(0,1)) = .2
+        _SmoothValueHigh("Step Value High", Range(0,1)) = .5
         _toonStep("Toon Step", Float) = 1
     }
 
@@ -71,7 +71,7 @@ Shader "Custom/SlimeShader"
                 float toonEffect = smoothstep(_SmoothValueLow, _SmoothValueHigh, diffuse);
                 toonEffect = floor(toonEffect * _toonStep)/_toonStep;
                 float3 ambiance = _BaseColor.rgb * _AmbienceAmount;
-                float3 frenselColor = frenselCalc * _RimColor;
+                float3 frenselColor = frenselCalc * _RimColor.rgb;
                 float3 albedo = ((toonEffect * _BaseColor.rgb) + ambiance) + frenselColor;
 
                 return float4(albedo,_Transparency);

@@ -9,7 +9,7 @@ Shader "Custom/SlimeShader"
         _FresnelPow("Fresnel Power", Float) = 1
         _SmoothValueLow("Step Value Low", Range(0,1)) = .2
         _SmoothValueHigh("Step Value High", Range(0,1)) = .5
-        _toonStep("Toon Step", Float) = 1
+        _toonStep("Toon Step", Range(.001,10)) = 1
     }
 
     SubShader

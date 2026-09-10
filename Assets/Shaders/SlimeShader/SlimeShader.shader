@@ -21,6 +21,7 @@ Shader "Custom/SlimeShader"
         
         Pass
         {
+            Tags { "LightMode" = "UniversalForward" } 
             HLSLPROGRAM
 
             #pragma vertex vert
@@ -104,9 +105,9 @@ Shader "Custom/SlimeShader"
                 return OUT;
             }
 
-            half4 frag() : SV_Target
+            float4 frag() : SV_Target
             {
-                return half4(1, 1, 1, 1);
+                return float4(0, 0, 0, 1);
             }
 
             ENDHLSL

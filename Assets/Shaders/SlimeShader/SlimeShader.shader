@@ -17,10 +17,10 @@ Shader "Custom/SlimeShader"
         Tags { "RenderType" = "Transparent" "Queue" = "Transparent" "RenderPipeline" = "UniversalPipeline" }
 
         Blend SrcAlpha OneMinusSrcAlpha
-        ZWrite Off
         
         Pass
         {
+            ZWrite On
             Tags { "LightMode" = "UniversalForward" } 
             HLSLPROGRAM
 
@@ -81,6 +81,7 @@ Shader "Custom/SlimeShader"
         }
         Pass
         {
+            ZWrite Off
             HLSLPROGRAM
 
             #pragma vertex vert

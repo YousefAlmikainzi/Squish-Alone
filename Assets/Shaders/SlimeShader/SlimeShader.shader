@@ -92,17 +92,20 @@ Shader "Custom/SlimeShader"
             struct Attributes
             {
                 float3 positionOS : POSITION;
+                float3 normals : NORMAL;
             };
 
             struct Varyings
             {
                 float4 positionHCS : SV_POSITION;
+                float3 normals : TEXCOORD1;
             };
 
             Varyings vert(Attributes IN)
             {
                 Varyings OUT;
                 OUT.positionHCS = TransformObjectToHClip(IN.positionOS);
+                OUT.normals = TransformObjectToWorldNormal(IN.normals);
                 return OUT;
             }
 

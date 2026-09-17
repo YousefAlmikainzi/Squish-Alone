@@ -9,7 +9,9 @@ Shader "Custom/SlimeShader"
         _FresnelPow("Fresnel Power", Float) = 1
         _SmoothValueLow("Step Value Low", Range(0,1)) = .2
         _SmoothValueHigh("Step Value High", Range(0,1)) = .5
-        _toonStep("Toon Step", Range(.001,10)) = 1
+        _ToonStep("Toon Step", Range(.001,10)) = 1
+        _OutlineWidth("Outline Width", Range(0,1)) = 1
+        _OutlineColor("Outline Color", Color) = (1,1,1,1)
     }
 
     SubShader
@@ -47,7 +49,7 @@ Shader "Custom/SlimeShader"
 
             float4 _BaseColor;
             float4 _RimColor;
-            float _Transparency, _SmoothValueLow, _FresnelPow, _SmoothValueHigh, _AmbienceAmount, _toonStep;
+            float _Transparency, _SmoothValueLow, _FresnelPow, _SmoothValueHigh, _AmbienceAmount, _ToonStep;
 
             Varyings vert(Attributes IN)
             {
@@ -70,7 +72,7 @@ Shader "Custom/SlimeShader"
                 
                 float diffuse = max(dot(normals, mainLight.direction), 0);
                 float toonEffect = smoothstep(_SmoothValueLow, _SmoothValueHigh, diffuse);
-                toonEffect = floor(toonEffect * _toonStep)/_toonStep;
+                toonEffect = floor(toonEffect * _ToonStep)/_ToonStep;
                 float3 ambiance = _BaseColor.rgb * _AmbienceAmount;
                 float3 frenselColor = frenselCalc * _RimColor.rgb;
                 float3 albedo = ((toonEffect * _BaseColor.rgb) + ambiance) + frenselColor;
@@ -82,6 +84,7 @@ Shader "Custom/SlimeShader"
         Pass
         {
             ZWrite Off
+            Cull Front
             HLSLPROGRAM
 
             #pragma vertex vert
@@ -100,18 +103,22 @@ Shader "Custom/SlimeShader"
                 float4 positionHCS : SV_POSITION;
                 float3 normals : TEXCOORD1;
             };
+            
+            float _OutlineWidth;
+            float4 _OutlineColor;
 
             Varyings vert(Attributes IN)
             {
                 Varyings OUT;
-                OUT.positionHCS = TransformObjectToHClip(IN.positionOS);
+                float3 outlinePos = IN.positionOS + IN.normals * _OutlineWidth;
+                OUT.positionHCS = TransformObjectToHClip(outlinePos);
                 OUT.normals = TransformObjectToWorldNormal(IN.normals);
                 return OUT;
             }
 
             float4 frag() : SV_Target
             {
-                return float4(0, 0, 0, 1);
+                return float4(_OutlineColor);
             }
 
             ENDHLSL

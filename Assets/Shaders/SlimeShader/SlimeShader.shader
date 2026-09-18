@@ -12,6 +12,8 @@ Shader "Custom/SlimeShader"
         _ToonStep("Toon Step", Range(.001,10)) = 1
         _OutlineWidth("Outline Width", Range(0,1)) = 1
         _OutlineColor("Outline Color", Color) = (1,1,1,1)
+        _SpeedOfWobble("Speed of Wobble", Float) = 1
+        _WobbleRange("Wobble Range", Range(0,1)) = .2
     }
 
     SubShader
@@ -49,7 +51,7 @@ Shader "Custom/SlimeShader"
 
             float4 _BaseColor;
             float4 _RimColor;
-            float _Transparency, _SmoothValueLow, _FresnelPow, _SmoothValueHigh, _AmbienceAmount, _ToonStep;
+            float _Transparency, _SmoothValueLow, _FresnelPow, _SmoothValueHigh, _AmbienceAmount, _ToonStep, _SpeedOfWobble, _WobbleRange;
 
             Varyings vert(Attributes IN)
             {
@@ -57,7 +59,10 @@ Shader "Custom/SlimeShader"
                 OUT.uv = IN.uv;
                 OUT.normal = TransformObjectToWorldNormal(IN.normal);
                 OUT.worldPos = TransformObjectToWorld(IN.positionOS.xyz);
-                OUT.positionHCS = TransformObjectToHClip(IN.positionOS.xyz);
+                float3 localPos = IN.positionOS.xyz;
+                float wobble = sin(_Time.y * _SpeedOfWobble) * _WobbleRange;
+                localPos.y *= 1 + wobble;
+                OUT.positionHCS = TransformObjectToHClip(localPos);
                 return OUT;
             }
 
@@ -104,14 +109,17 @@ Shader "Custom/SlimeShader"
                 float3 normals : TEXCOORD1;
             };
             
-            float _OutlineWidth;
+            float _OutlineWidth, _SpeedOfWobble, _WobbleRange;
             float4 _OutlineColor;
 
             Varyings vert(Attributes IN)
             {
                 Varyings OUT;
                 float3 outlinePos = IN.positionOS + IN.normals * _OutlineWidth;
-                OUT.positionHCS = TransformObjectToHClip(outlinePos);
+                float3 localPos = outlinePos;
+                float wobble = sin(_Time.y * _SpeedOfWobble) * _WobbleRange;
+                localPos.y *= 1 + wobble;
+                OUT.positionHCS = TransformObjectToHClip(localPos);
                 OUT.normals = TransformObjectToWorldNormal(IN.normals);
                 return OUT;
             }

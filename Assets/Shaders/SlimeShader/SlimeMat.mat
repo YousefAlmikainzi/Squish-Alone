@@ -31,10 +31,12 @@ Material:
     - _FresnelPow: 7
     - _OutlineWidth: 0.024
     - _SmoothValueHigh: 0.5
-    - _SmoothValueLow: 0.15
+    - _SmoothValueLow: 0.009
+    - _SpeedOfWobble: 2
     - _StepValue: 0.335
-    - _ToonStep: 1
+    - _ToonStep: 2
     - _Transparency: 0.95
+    - _WobbleRange: 0.06
     - _toonStep: 2
     m_Colors:
     - _BaseColor: {r: 0.19989875, g: 0.5660378, b: 0, a: 1}

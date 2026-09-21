@@ -147,21 +147,26 @@ Shader "Custom/SlimeShader"
             #pragma fragment frag
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
             struct Attributes
             {
                 float3 positionOS : POSITION;
+                float3 normal : NORMAL;
             };
 
             struct Varyings
             {
                 float4 positionHCS : SV_POSITION;
+                float3 normal : TEXCOORD0;
+                float3 worldPos: TEXCOORD1;
             };
             
             Varyings vert(Attributes IN)
             {
                 Varyings OUT;
                 OUT.positionHCS = TransformObjectToHClip(IN.positionOS);
+                OUT.normal = TransformObjectToWorldNormal(IN.normal);
                 return OUT;
             }
 

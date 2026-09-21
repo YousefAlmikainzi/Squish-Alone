@@ -61,7 +61,9 @@ Shader "Custom/SlimeShader"
                 OUT.worldPos = TransformObjectToWorld(IN.positionOS.xyz);
                 float3 localPos = IN.positionOS.xyz;
                 float wobble = sin(_Time.y * _SpeedOfWobble) * _WobbleRange;
+                localPos.x *= 1 / (1 + wobble);
                 localPos.y *= 1 + wobble;
+                localPos.z *= 1 / (1 + wobble);
                 OUT.positionHCS = TransformObjectToHClip(localPos);
                 return OUT;
             }
@@ -118,7 +120,9 @@ Shader "Custom/SlimeShader"
                 float3 outlinePos = IN.positionOS + IN.normals * _OutlineWidth;
                 float3 localPos = outlinePos;
                 float wobble = sin(_Time.y * _SpeedOfWobble) * _WobbleRange;
+                localPos.x *= 1 / (1 + wobble);
                 localPos.y *= 1 + wobble;
+                localPos.z *= 1 / (1 + wobble);
                 OUT.positionHCS = TransformObjectToHClip(localPos);
                 OUT.normals = TransformObjectToWorldNormal(IN.normals);
                 return OUT;
@@ -127,6 +131,43 @@ Shader "Custom/SlimeShader"
             float4 frag() : SV_Target
             {
                 return float4(_OutlineColor);
+            }
+
+            ENDHLSL
+        }
+
+        Pass
+        {
+            ZWrite On
+            ColorMask 0
+            Tags { "LightMode" = "ShadowCaster" }
+            HLSLPROGRAM
+
+            #pragma vertex vert
+            #pragma fragment frag
+
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+
+            struct Attributes
+            {
+                float3 positionOS : POSITION;
+            };
+
+            struct Varyings
+            {
+                float4 positionHCS : SV_POSITION;
+            };
+            
+            Varyings vert(Attributes IN)
+            {
+                Varyings OUT;
+                OUT.positionHCS = TransformObjectToHClip(IN.positionOS);
+                return OUT;
+            }
+
+            float4 frag() : SV_Target
+            {
+                return float4(0,0,0,0);
             }
 
             ENDHLSL

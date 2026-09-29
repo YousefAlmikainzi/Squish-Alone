@@ -128,7 +128,7 @@ Shader "Custom/SlimeShader"
                 return OUT;
             }
 
-            float4 frag() : SV_Target
+            float4 frag(Varyings IN) : SV_Target
             {
                 return float4(_OutlineColor);
             }
@@ -165,16 +165,19 @@ Shader "Custom/SlimeShader"
             Varyings vert(Attributes IN)
             {
                 Varyings OUT;
+                OUT.worldPos = TransformObjectToWorld(IN.positionOS);
                 OUT.positionHCS = TransformObjectToHClip(IN.positionOS);
                 OUT.normal = TransformObjectToWorldNormal(IN.normal);
+                float3 normals = normalize(OUT.normal);
+                float3 lightDir = GetMainLight().direction;
+                float3 shadowMap = ApplyShadowBias(OUT.worldPos, normals, lightDir);
                 return OUT;
             }
 
-            float4 frag() : SV_Target
+            float4 frag(Varyings IN) : SV_Target
             {
                 return float4(0,0,0,0);
             }
-
             ENDHLSL
         }
     }

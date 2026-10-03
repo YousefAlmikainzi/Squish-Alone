@@ -166,11 +166,11 @@ Shader "Custom/SlimeShader"
             {
                 Varyings OUT;
                 OUT.worldPos = TransformObjectToWorld(IN.positionOS);
-                OUT.positionHCS = TransformObjectToHClip(IN.positionOS);
                 OUT.normal = TransformObjectToWorldNormal(IN.normal);
                 float3 normals = normalize(OUT.normal);
                 float3 lightDir = GetMainLight().direction;
-                float3 shadowMap = ApplyShadowBias(OUT.worldPos, normals, lightDir);
+                float3 nonAcne = ApplyShadowBias(OUT.worldPos, normals, lightDir);
+                OUT.positionHCS = TransformWorldToHClip(nonAcne);
                 return OUT;
             }
 

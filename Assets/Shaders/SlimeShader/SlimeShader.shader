@@ -59,12 +59,12 @@ Shader "Custom/SlimeShader"
                 Varyings OUT;
                 OUT.uv = IN.uv;
                 OUT.normal = TransformObjectToWorldNormal(IN.normal);
-                OUT.worldPos = TransformObjectToWorld(IN.positionOS.xyz);
                 float3 localPos = IN.positionOS.xyz;
                 float wobble = sin(_Time.y * _SpeedOfWobble) * _WobbleRange;
                 localPos.x *= 1 / (1 + wobble);
                 localPos.y *= 1 + wobble;
                 localPos.z *= 1 / (1 + wobble);
+                OUT.worldPos = TransformObjectToWorld(localPos);
                 OUT.positionHCS = TransformObjectToHClip(localPos);
                 return OUT;
             }
@@ -164,13 +164,20 @@ Shader "Custom/SlimeShader"
                 float3 worldPos: TEXCOORD1;
             };
             
+            float _SpeedOfWobble, _WobbleRange;
+            
             Varyings vert(Attributes IN)
             {
                 Varyings OUT;
-                OUT.worldPos = TransformObjectToWorld(IN.positionOS);
                 OUT.normal = TransformObjectToWorldNormal(IN.normal);
                 float3 normals = normalize(OUT.normal);
                 float3 lightDir = GetMainLight().direction;
+                float3 localPos = IN.positionOS.xyz;
+                float wobble = sin(_Time.y * _SpeedOfWobble) * _WobbleRange;
+                localPos.x *= 1 / (1 + wobble);
+                localPos.y *= 1 + wobble;
+                localPos.z *= 1 / (1 + wobble);
+                OUT.worldPos = TransformObjectToWorld(localPos);
                 float3 nonAcne = ApplyShadowBias(OUT.worldPos, normals, lightDir);
                 OUT.positionHCS = TransformWorldToHClip(nonAcne);
                 return OUT;

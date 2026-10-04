@@ -30,6 +30,7 @@ Shader "Custom/SlimeShader"
 
             #pragma vertex vert
             #pragma fragment frag
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
@@ -72,12 +73,13 @@ Shader "Custom/SlimeShader"
             {
                 float3 normals = normalize(IN.normal);
                 float3 camera = GetCameraPositionWS();
-                Light mainLight = GetMainLight();
+                float4 shadowCoord = TransformWorldToShadowCoord(IN.worldPos);
+                Light mainLight = GetMainLight(shadowCoord);
                 
                 float3 viewDirection = normalize(camera - IN.worldPos);
                 float frenselCalc = pow(1 - max(dot(normals, viewDirection),0), _FresnelPow); 
                 
-                float diffuse = max(dot(normals, mainLight.direction), 0);
+                float diffuse = max(dot(normals, mainLight.direction), 0) * mainLight.shadowAttenuation;
                 float toonEffect = smoothstep(_SmoothValueLow, _SmoothValueHigh, diffuse);
                 toonEffect = floor(toonEffect * _ToonStep)/_ToonStep;
                 float3 ambiance = _BaseColor.rgb * _AmbienceAmount;
